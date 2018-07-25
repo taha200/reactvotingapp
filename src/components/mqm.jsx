@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import pic from '../MQMworld.png'
-
+import firebase from 'firebase'
 export default class Mqm extends Component {
 constructor(props){
   super(props)
@@ -8,10 +8,12 @@ constructor(props){
     voteval:0
   }
 }
-  render() {
+  render() 
+   {
+let a=this.props.vote
     return (
       <div>
-        <img src={pic} onClick={()=>this.props.voteMQM(++this.state.voteval)}/>
+        <img src={pic} onClick={()=>this.props.voteMQM(++a)}/>
         <h2>VOTE COUNT FOR MQM = {this.props.vote}</h2>
       </div>
     )

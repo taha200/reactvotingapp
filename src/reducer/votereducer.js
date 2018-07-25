@@ -1,10 +1,9 @@
-
+import firebase from 'firebase'
 const reducervote=(state={
     MQM:0,
     PTI:0,
-    PMLN:0,
     PPP:0,
-    total:0
+    PMLN:0
 },action)=>{
     switch(action.type){
         case 'MQM':
