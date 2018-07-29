@@ -11,9 +11,12 @@ constructor(props){
   render() 
    {
 let a=this.props.vote
+let b=this.props.vota
     return (
       <div>
-        <img src={pic} onClick={()=>this.props.voteMQM(++a)}/>
+        <img src={pic} onClick={()=>{          this.props.voteMQM(++a)
+          this.props.vtot(++b)
+         } }/>
         <h2>VOTE COUNT FOR MQM = {this.props.vote}</h2>
       </div>
     )

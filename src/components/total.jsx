@@ -22,7 +22,7 @@ componentWillMount(){
         this.props.red['total']=total
     return (
       <div>
-       <h2>TOTAL VOTES ARE {this.props.red['total']}</h2>
+          <h2>TOTAL VOTES ARE {this.props.red['total']}</h2>
       </div>
     )
   }

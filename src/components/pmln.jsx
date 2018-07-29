@@ -24,9 +24,12 @@ export default class Pmln extends Component {
 }
   render() {
     let a=this.props.vote
+    let b=this.props.vota
     return (
       <div>
-        <img src={pic} width="300px" height="300px" onClick={()=>this.props.votePMLN(++a)}/>
+        <img src={pic} width="300px" height="300px" onClick={()=>{this.props.votePMLN(++a)
+         this.props.vtot(++b)
+        }}/>
         <h2>VOTE COUNT FOR PMLN = {this.props.vote}</h2>
       </div>
     )
