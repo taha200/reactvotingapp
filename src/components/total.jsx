@@ -17,6 +17,7 @@ componentWillMount(){
      firebase.initializeApp(config);
     }
 }
+
     render() {
         let total=this.props.red.MQM+this.props.red.PPP+this.props.red.PMLN+this.props.red.PTI
         this.props.red['total']=total

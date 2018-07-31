@@ -7,12 +7,14 @@ import {connect} from 'react-redux'
 import Total from './total'
 import firebase from 'firebase'
 import store from '../store'
-let em;
+import {mqmVota} from '../action/action'
+let email;
 class Voting extends Component {
   constructor(props){
     super(props);
   }
   signOuta(propa){
+    console.log(propa)
     firebase.auth().signOut()
 	
     .then(function() {
@@ -23,30 +25,36 @@ class Voting extends Component {
     });
   }
   componentWillMount(){
-   let email=this.props.match.params.user
-var newUser=this.props.redvoter
-console.log(newUser)
- const mqvota=this.props.mqmVote
-const pmlvota= this.props.pmlnVote
-  const pppvota= this.props.pppVote
-  const ptivota= this.props.ptiVote
-  const  tot=this.props.totala
-    em=email.split('@')
-    console.log(em)
-   var reference = firebase.database().ref().child(em[0])
-        reference.on('value',function (snap) {
+ email=this.props.match.params.user
+//    console.log(email)
+// var newUser=this.props.redvoter
+// console.log(newUser)
+//  const mqvota=this.props.mqmVote
+// const pmlvota= this.props.pmlnVote
+//   const pppvota= this.props.pppVote
+//   const ptivota= this.props.ptiVote
+//   const  tot=this.props.totala
+
+   var reference = firebase.database().ref().child('Voting')
+        reference.on('value',(snap)=> {
             var data = snap.val();
-            console.log(data)
-            if (data) {
-             mqvota(data.MQM)
-            pmlvota(data.PMLN)
-             pppvota(data.PPP)
-             ptivota(data.PTI)
-             tot(data.total)
+       this.props.mqmVote(data.MQM,false)
+       this.props.pmlnVote(data.PMLN,false)
+       this.props.pppVote(data.PPP,false)
+       this.props.ptiVote(data.PTI,false)
             }
-            else {
-reference.set(newUser);
-            }
+        )
+        var refx = firebase.database().ref().child('Users').child(email)
+        refx.once('value',data =>{
+          var datam=data.val()
+          if(datam){
+            console.log(datam)
+          }
+          else{
+            var obj = {}
+            obj.hasvoted=false
+            refx.set(obj)
+          }
         })
     }
    
@@ -70,10 +78,10 @@ reference.set(newUser);
     return (
       <div>
         <h1>{this.props.match.params.user}</h1>
-        <Mqm vote={this.props.redvoter.MQM} voteMQM={this.props.mqmVote} vtot={this.props.totala} vota={this.props.redvoter.total} />
-        <Pmln vote={this.props.redvoter.PMLN} votePMLN={this.props.pmlnVote}  vtot={this.props.totala} vota={this.props.redvoter.total}/>
-        <Ppp vote={this.props.redvoter.PPP} votePPP={this.props.pppVote}  vtot={this.props.totala} vota={this.props.redvoter.total}/>
-        <Pti vote={this.props.redvoter.PTI} votePTI={this.props.ptiVote} vtot={this.props.totala} vota={this.props.redvoter.total} />
+        <Mqm vote={this.props.redvoter.MQM} voteMQM={this.props.mqmVote} prop={this.props.history}/>
+        <Pmln vote={this.props.redvoter.PMLN} votePMLN={this.props.pmlnVote} prop={this.props.history} />
+        <Ppp vote={this.props.redvoter.PPP} votePPP={this.props.pppVote} prop={this.props.history} />
+        <Pti vote={this.props.redvoter.PTI} votePTI={this.props.ptiVote} prop={this.props.history} />
         <Total red={this.props.redvoter}/>
         <button onClick={()=>this.signOuta(this.props)}>SIGN OUT</button>
       </div>
@@ -87,44 +95,64 @@ function mapSetToState(state){
 }
 function mapDispatchToProps(dispatch){
 return ({
-   mqmVote:(num)=>{
-      const firebaseref=firebase.database().ref().child(em[0]).child('MQM')
+   mqmVote:(num,cond)=>{
+      const firebaseref=firebase.database().ref().child('Voting').child('MQM')
     firebaseref.set(num)
-    dispatch({
-      type:'MQM',
-      payload:num
+if(cond){
+    const refsa=firebase.database().ref().child('Users').child(email).child('hasvoted')
+    refsa.transaction((current)=>{
+      current=true;
+      return current
     })
-   },
-   pppVote:(num)=>{
-   const firebaseref=firebase.database().ref().child(em[0]).child('PPP')
+  }
+  dispatch({
+    type:'MQM',
+    payload:num
+  })
+ },
+   pppVote:(num,cond)=>{
+   const firebaseref=firebase.database().ref().child('Voting').child('PPP')
   firebaseref.set(num)
+  if(cond){
+    const refsa=firebase.database().ref().child('Users').child(email).child('hasvoted')
+    refsa.transaction((current)=>{
+      current=true;
+      return current
+    })
+  }
     dispatch({
       type:'PPP',
       payload:num
     })
    },
-  pmlnVote:(num)=>{
-    const firebaseref=firebase.database().ref().child(em[0]).child('PMLN')
+  pmlnVote:(num,cond)=>{
+    const firebaseref=firebase.database().ref().child('Voting').child('PMLN')
     firebaseref.set(num)
+    if(cond){
+      const refsa=firebase.database().ref().child('Users').child(email).child('hasvoted')
+      refsa.transaction((current)=>{
+        current=true;
+        return current
+      })
+    }
     dispatch({
       type:'PMLN',
       payload:num
     })
    }
    ,
-   ptiVote:(num)=>{
-    const firebaseref=firebase.database().ref().child(em[0]).child('PTI')
+   ptiVote:(num,cond)=>{
+    const firebaseref=firebase.database().ref().child('Voting').child('PTI')
     firebaseref.set(num)
+    if(cond){
+      const refsa=firebase.database().ref().child('Users').child(email).child('hasvoted')
+      refsa.transaction((current)=>{
+        current=true;
+        return current
+      })
+    }
     dispatch({
       type:'PTI',
-      payload:num
-    })
-   },
-   totala:(num)=>{
-    const firebaseref=firebase.database().ref().child(em[0]).child('total')
-    firebaseref.set(num)
-    dispatch({
-      type:'TOTAL',
       payload:num
     })
    }

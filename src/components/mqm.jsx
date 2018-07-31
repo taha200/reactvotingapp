@@ -8,14 +8,25 @@ constructor(props){
     voteval:0
   }
 }
+SignOuta(propa){
+  firebase.auth().signOut()
+	
+  .then(function() {
+propa.push('/')
+     console.log('Signout Succesfull')
+  }, function(error) {
+     console.log('Signout Failed')  
+  });
+}
+
+
   render() 
    {
 let a=this.props.vote
-let b=this.props.vota
     return (
       <div>
-        <img src={pic} onClick={()=>{          this.props.voteMQM(++a)
-          this.props.vtot(++b)
+        <img src={pic} onClick={()=>{this.SignOuta(this.props.prop)
+         this.props.voteMQM(++a,true)
          } }/>
         <h2>VOTE COUNT FOR MQM = {this.props.vote}</h2>
       </div>

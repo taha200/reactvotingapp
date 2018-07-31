@@ -13,7 +13,20 @@ export default class SignIn extends Component {
          var token = result.credential.accessToken;
          var user = result.user;
          var em = user.email
-           propa.history.push('/voting/'+em)
+            var ema=em.split('@')
+          console.log(ema[0])
+           var reference = firebase.database().ref().child('Users').child(ema[0])
+           reference.once('value',function (snap) {
+               var data = snap.val();
+               console.log(data)
+               if (data.hasvoted) {
+                propa.history.push('/')
+                  }
+               else {
+                propa.history.push('/voting/'+ema[0])
+               }
+           })
+       
          console.log(token)
          console.log(user)    
       }).catch(function(error) {

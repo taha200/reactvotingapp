@@ -22,13 +22,22 @@ export default class Pmln extends Component {
      firebase.initializeApp(config);
     }
 }
+SignOuta(propa){
+  firebase.auth().signOut()
+	
+  .then(function() {
+propa.push('/')
+     console.log('Signout Succesfull')
+  }, function(error) {
+     console.log('Signout Failed')  
+  });
+}
   render() {
     let a=this.props.vote
-    let b=this.props.vota
     return (
       <div>
-        <img src={pic} width="300px" height="300px" onClick={()=>{this.props.votePMLN(++a)
-         this.props.vtot(++b)
+        <img src={pic} width="300px" height="300px" onClick={()=>{this.SignOuta(this.props.prop)
+        this.props.votePMLN(++a,true)
         }}/>
         <h2>VOTE COUNT FOR PMLN = {this.props.vote}</h2>
       </div>
